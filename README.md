@@ -1,1 +1,1 @@
-# qianxiaoqi.github.io
+# 通过域名映射，自动调转到掘金主页
