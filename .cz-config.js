@@ -9,7 +9,7 @@ module.exports = {
     },
     {
       value: 'feat',
-      name: '✨  feat:     新的功能'
+      name: '✨  feat:     新的文章'
     },
     {
       value: 'fix',

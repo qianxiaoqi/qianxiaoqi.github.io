@@ -8,7 +8,7 @@ module.exports = {
   ],
   base: '/',
   // theme: 'reco',
-  theme: require.resolve('../../packages/vuepress-theme-reco'),
+  // theme: require.resolve('../../packages/vuepress-theme-reco'),
   themeConfig: {
     nav: [
       { text: 'Home', link: '/', icon: 'reco-home' },
