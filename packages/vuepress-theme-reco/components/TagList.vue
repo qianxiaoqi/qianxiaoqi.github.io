@@ -2,7 +2,6 @@
   <div class="tags">
     <span
       v-for="(item, index) in tags"
-      v-show="!item.pages || (item.pages && item.pages.length > 0)"
       :key="index"
       :class="{'active': item.name == currentTag}"
       :style="{ 'backgroundColor': getOneColor() }"
@@ -11,32 +10,32 @@
 </template>
 
 <script>
-import { defineComponent, computed, getCurrentInstance } from 'vue-demi'
 import { getOneColor } from '@theme/helpers/other'
 
-export default defineComponent({
+export default {
   props: {
     currentTag: {
       type: String,
       default: ''
     }
   },
-  setup (props, ctx) {
-    const instance = getCurrentInstance().proxy
-    const tags = computed(() => {
-      return [{ name: instance.$recoLocales.all, path: '/tag/' }, ...instance.$tagesList]
-    })
-
-    const tagClick = tag => {
-      ctx.emit('getCurrentTag', tag)
+  computed: {
+    tags () {
+      return [{ name: '全部', path: '/tag/' }, ...this.$tags.list]
     }
-
-    return { tags, tagClick, getOneColor }
+  },
+  methods: {
+    tagClick (tag) {
+      this.$emit('getCurrentTag', tag)
+    },
+    getOneColor
   }
-})
+}
 </script>
 
 <style lang="stylus" scoped>
+@require '../styles/mode.styl'
+
 .tags
   margin 30px 0
   span

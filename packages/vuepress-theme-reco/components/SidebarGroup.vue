@@ -54,23 +54,19 @@
 </template>
 
 <script>
-import { defineComponent, getCurrentInstance } from 'vue-demi'
 import { isActive } from '@theme/helpers/utils'
 import DropdownTransition from '@theme/components/DropdownTransition'
 
-export default defineComponent({
+export default {
   name: 'SidebarGroup',
   props: ['item', 'open', 'collapsable', 'depth'],
   components: { DropdownTransition },
-
-  setup (props, ctx) {
-    const instance = getCurrentInstance().proxy
-
-    instance.$options.components.SidebarLinks = require('./SidebarLinks.vue').default
-
-    return { isActive }
-  }
-})
+  // ref: https://vuejs.org/v2/guide/components-edge-cases.html#Circular-References-Between-Components
+  beforeCreate () {
+    this.$options.components.SidebarLinks = require('./SidebarLinks.vue').default
+  },
+  methods: { isActive }
+}
 </script>
 
 <style lang="stylus">

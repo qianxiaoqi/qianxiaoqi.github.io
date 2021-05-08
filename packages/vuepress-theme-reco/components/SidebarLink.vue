@@ -1,8 +1,7 @@
 <script>
-import { defineComponent } from 'vue-demi'
 import { isActive } from '@theme/helpers/utils'
 
-export default defineComponent({
+export default {
   functional: true,
 
   props: ['item', 'sidebarDepth'],
@@ -31,8 +30,27 @@ export default defineComponent({
       : selfActive
     const link = renderLink(h, item.path, item.title || item.path, active)
     return link
+
+    // const configDepth = $page.frontmatter.sidebarDepth ||
+    //   sidebarDepth ||
+    //   $themeLocaleConfig.sidebarDepth ||
+    //   $themeConfig.sidebarDepth
+
+    // const maxDepth = configDepth == null ? 1 : configDepth
+
+    // const displayAllHeaders = $themeLocaleConfig.displayAllHeaders ||
+    //   $themeConfig.displayAllHeaders
+
+    // if (item.type === 'auto') {
+    //   return [link, renderChildren(h, item.children, item.basePath, $route, maxDepth)]
+    // } else if ((active || displayAllHeaders) && item.headers && !hashRE.test(item.path)) {
+    //   const children = groupHeaders(item.headers)
+    //   return [link, renderChildren(h, children, item.path, $route, maxDepth)]
+    // } else {
+    //   return link
+    // }
   }
-})
+}
 
 function renderLink (h, to, text, active) {
   return h('router-link', {

@@ -3,7 +3,13 @@ import { filterPosts, sortPostsByStickyAndDate, sortPostsByDate } from '../helpe
 export default {
   computed: {
     $recoPosts () {
-      let posts = this.$site.pages
+      const {
+        $categories: { list: articles }
+      } = this
+
+      let posts = articles.reduce((allData, currentData) => {
+        return [...allData, ...currentData.pages]
+      }, [])
 
       posts = filterPosts(posts, false)
       sortPostsByStickyAndDate(posts)
@@ -35,40 +41,6 @@ export default {
       }
 
       return formatPagesArr
-    },
-    $categoriesList () {
-      return this.$categories.list.map(category => {
-        category.pages = category.pages.filter(page => {
-          return page.frontmatter.publish !== false
-        })
-        return category
-      })
-    },
-    $tagesList () {
-      return this.$tags.list.map(tag => {
-        tag.pages = tag.pages.filter(page => {
-          return page.frontmatter.publish !== false
-        })
-        return tag
-      })
-    },
-    $showSubSideBar () {
-      const {
-        $themeConfig: { subSidebar: themeSubSidebar, sidebar: themeSidebar },
-        $frontmatter: { subSidebar: pageSubSidebar, sidebar: pageSidebar }
-      } = this
-
-      const headers = this.$page.headers || []
-
-      if ([pageSubSidebar, pageSidebar].indexOf(false) > -1) {
-        return false
-      } else if ([pageSubSidebar, pageSidebar].indexOf('auto') > -1 && headers.length > 0) {
-        return true
-      } else if ([themeSubSidebar, themeSidebar].indexOf('auto') > -1 && headers.length > 0) {
-        return true
-      } else {
-        return false
-      }
     }
   }
 }

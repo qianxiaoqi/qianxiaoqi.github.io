@@ -1,24 +1,24 @@
 <template>
   <div class="footer-wrapper">
     <span>
-      <reco-icon icon="reco-theme" />
+      <i class="iconfont reco-theme"></i>
       <a target="blank" href="https://vuepress-theme-reco.recoluan.com">{{`vuepress-theme-reco@${version}`}}</a>
     </span>
     <span v-if="$themeConfig.record">
-      <reco-icon icon="reco-beian" />
+      <i class="iconfont reco-beian"></i>
       <a :href="$themeConfig.recordLink || '#'">{{ $themeConfig.record }}</a>
     </span>
     <span>
-      <reco-icon icon="reco-copyright" />
+      <i class="iconfont reco-copyright"></i>
       <a>
-        <span v-if="$themeConfig.author">{{ $themeConfig.author }}</span>
+        <span v-if="$themeConfig.author || $site.title">{{ $themeConfig.author || $site.title }}</span>
         &nbsp;&nbsp;
         <span v-if="$themeConfig.startYear && $themeConfig.startYear != (new Date().getFullYear())">{{ $themeConfig.startYear }} - </span>
         {{ new Date().getFullYear() }}
       </a>
     </span>
     <span v-show="showAccessNumber">
-      <reco-icon icon="reco-eye" />
+      <i class="iconfont reco-eye"></i>
       <AccessNumber idVal="/" />
     </span>
     <p class="cyber-security" v-if="$themeConfig.cyberSecurityRecord">
@@ -30,26 +30,28 @@
 </template>
 
 <script>
-import { defineComponent, computed, getCurrentInstance } from 'vue-demi'
-import { RecoIcon } from '@vuepress-reco/core/lib/components'
 import { version } from '../package.json'
-export default defineComponent({
-  components: { RecoIcon },
-  setup (props, ctx) {
-    const instance = getCurrentInstance().proxy
-    const showAccessNumber = computed(() => {
+export default {
+  data () {
+    return {
+      version
+    }
+  },
+  computed: {
+    showAccessNumber () {
       const {
         $themeConfig: { valineConfig },
         $themeLocaleConfig: { valineConfig: valineLocalConfig }
-      } = instance
+      } = this
 
       const vc = valineLocalConfig || valineConfig
-
-      return vc && vc.visitor != false
-    })
-    return { version, showAccessNumber }
+      if (vc && vc.visitor != false) {
+        return true
+      }
+      return false
+    }
   }
-})
+}
 </script>
 
 <style lang="stylus" scoped>

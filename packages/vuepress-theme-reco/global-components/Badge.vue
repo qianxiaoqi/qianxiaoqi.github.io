@@ -1,7 +1,5 @@
 <script>
-import { defineComponent } from 'vue-demi'
-
-export default defineComponent({
+export default {
   functional: true,
   props: {
     type: {
@@ -22,10 +20,11 @@ export default defineComponent({
       }
     }, props.text || slots().default)
   }
-})
+}
 </script>
 
 <style lang="stylus" scoped>
+@require '../styles/mode.styl'
 .badge
   display inline-block
   font-size 14px

@@ -1,6 +1,6 @@
 {
   "name": "@vuepress-reco/vuepress-plugin-pagation",
-  "version": "1.6.7",
+  "version": "1.4.7",
   "description": "Pagation plugin for vuepress-theme-reco or other vuepress theme",
   "keywords": [
     "vuepress-theme-reco",
@@ -13,12 +13,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vuepress-reco/vuepress-plugin-pagation.git"
+    "url": "git+https://github.com/vuepress-reco/vuepress-theme-reco.git"
   },
   "license": "MIT",
   "author": "reco_luan <recoluan@outlook.com>",
-  "main": "index.js",
-  "publishConfig": {
-    "access": "public"
-  }
+  "main": "index.js"
 }

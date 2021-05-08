@@ -1,18 +1,17 @@
 <template>
 	<div v-click-outside="hideMenu" class="color-picker" v-if="$themeConfig.modePicker !== false" >
 		<a class="color-button" @click.prevent="showMenu = !showMenu">
-      <reco-icon icon="reco-color" />
+			<i class="iconfont reco-color"></i>
 		</a>
-		<ModuleTransition :transform=" ['translate(-50%, 0)', 'translate(-50%, -10px)']">
+		<transition name="menu-transition" mode="out-in">
 			<div v-show="showMenu" class="color-picker-menu">
 				<ModePicker />
 			</div>
-		</ModuleTransition>
+		</transition>
 	</div>
 </template>
 
 <script>
-import { RecoIcon, ModuleTransition } from '@vuepress-reco/core/lib/components'
 import ClickOutside from 'vue-click-outside'
 import ModePicker from './ModePicker'
 import applyMode from './applyMode'
@@ -25,9 +24,7 @@ export default {
   },
 
   components: {
-    ModePicker,
-    RecoIcon,
-    ModuleTransition
+    ModePicker
   },
 
   data () {
@@ -64,6 +61,8 @@ export default {
 </script>
 
 <style lang="stylus">
+@require '../../styles/mode.styl'
+
 .color-picker {
 	position: relative;
 	margin-right: 1em;
@@ -81,7 +80,17 @@ export default {
 		position: absolute;
 		top: 40px;
 		left: 50%;
+		transform: translateX(-50%);
 		z-index: 150;
+		&.menu-transition-enter-active,
+		&.menu-transition-leave-active {
+			transition: all 0.25s ease-in-out;
+		}
+		&.menu-transition-enter,
+		&.menu-transition-leave-to {
+			top: 50px;
+			opacity: 0;
+		}
 
 		ul {
 			list-style-type: none;

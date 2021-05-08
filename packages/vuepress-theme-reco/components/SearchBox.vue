@@ -1,6 +1,6 @@
 <template>
   <div class="search-box">
-    <reco-icon icon="reco-search" />
+    <i class="iconfont reco-search"></i>
     <input
       @input="query = $event.target.value"
       aria-label="Search"
@@ -40,44 +40,32 @@
 </template>
 
 <script>
-import { defineComponent, reactive, toRefs, computed, getCurrentInstance } from 'vue-demi'
-import { RecoIcon } from '@vuepress-reco/core/lib/components'
-
-export default defineComponent({
-  components: { RecoIcon },
-  setup (props, ctx) {
-    const instance = getCurrentInstance().proxy
-
-    const state = reactive({
+export default {
+  data () {
+    return {
       query: '',
       focused: false,
       focusIndex: 0,
       placeholder: undefined
-    })
-
-    const showSuggestions = computed(() => {
-      return (
-        state.focused && suggestions.value && suggestions.value.length
-      )
-    })
-
-    const getPageLocalePath = (page) => {
-      for (const localePath in instance.$site.locales || {}) {
-        if (localePath !== '/' && page.path.indexOf(localePath) === 0) {
-          return localePath
-        }
-      }
-      return '/'
     }
-
-    const suggestions = computed(() => {
-      const query = state.query.trim().toLowerCase()
+  },
+  mounted () {
+    this.placeholder = this.$site.themeConfig.searchPlaceholder || ''
+  },
+  computed: {
+    showSuggestions () {
+      return (
+        this.focused && this.suggestions && this.suggestions.length
+      )
+    },
+    suggestions () {
+      const query = this.query.trim().toLowerCase()
       if (!query) {
         return
       }
-      const { pages } = instance.$site
-      const max = instance.$site.themeConfig.searchMaxSuggestions
-      const localePath = instance.$localePath
+      const { pages } = this.$site
+      const max = this.$site.themeConfig.searchMaxSuggestions
+      const localePath = this.$localePath
       const matches = item => (
         item && item.title && item.title.toLowerCase().indexOf(query) > -1
       )
@@ -86,7 +74,7 @@ export default defineComponent({
         if (res.length >= max) break
         const p = pages[i]
         // filter out results that do not match current locale
-        if (getPageLocalePath(p) !== localePath) {
+        if (this.getPageLocalePath(p) !== localePath) {
           continue
         }
         if (matches(p)) {
@@ -105,57 +93,57 @@ export default defineComponent({
         }
       }
       return res
-    })
-
-    const alignRight = computed(() => {
-      const navCount = (instance.$site.themeConfig.nav || []).length
-      const repo = instance.$site.repo ? 1 : 0
+    },
+    // make suggestions align right when there are not enough items
+    alignRight () {
+      const navCount = (this.$site.themeConfig.nav || []).length
+      const repo = this.$site.repo ? 1 : 0
       return navCount + repo <= 2
-    })
-
-    const onUp = () => {
-      if (showSuggestions.value) {
-        if (state.focusIndex > 0) {
-          state.focusIndex--
-        } else {
-          state.focusIndex = suggestions.value.length - 1
+    }
+  },
+  methods: {
+    getPageLocalePath (page) {
+      for (const localePath in this.$site.locales || {}) {
+        if (localePath !== '/' && page.path.indexOf(localePath) === 0) {
+          return localePath
         }
       }
-    }
-
-    const onDown = () => {
-      if (showSuggestions.value) {
-        if (state.focusIndex < suggestions.value.length - 1) {
-          state.focusIndex++
+      return '/'
+    },
+    onUp () {
+      if (this.showSuggestions) {
+        if (this.focusIndex > 0) {
+          this.focusIndex--
         } else {
-          state.focusIndex = 0
+          this.focusIndex = this.suggestions.length - 1
         }
       }
-    }
-
-    const go = (i) => {
-      if (!showSuggestions.value) {
+    },
+    onDown () {
+      if (this.showSuggestions) {
+        if (this.focusIndex < this.suggestions.length - 1) {
+          this.focusIndex++
+        } else {
+          this.focusIndex = 0
+        }
+      }
+    },
+    go (i) {
+      if (!this.showSuggestions) {
         return
       }
-      instance.$router.push(suggestions.value[i].path)
-      state.query = ''
-      state.focusIndex = 0
+      this.$router.push(this.suggestions[i].path)
+      this.query = ''
+      this.focusIndex = 0
+    },
+    focus (i) {
+      this.focusIndex = i
+    },
+    unfocus () {
+      this.focusIndex = -1
     }
-
-    const focus = (i) => {
-      state.focusIndex = i
-    }
-
-    const unfocus = () => {
-      state.focusIndex = -1
-    }
-
-    return { showSuggestions, suggestions, alignRight, onUp, onDown, focus, unfocus, go, ...toRefs(state) }
-  },
-  mounted () {
-    this.placeholder = this.$site.themeConfig.searchPlaceholder || ''
   }
-})
+}
 </script>
 
 <style lang="stylus">

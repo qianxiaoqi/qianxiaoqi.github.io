@@ -4,7 +4,7 @@
 
 1. This is a Vuepress theme, which is designed to add blog categories, tag walls, pagination, comments and other functions required;
 2. The theme is minimalist, modified according to the default theme of Vuepress, and the official theme configuration is still applicable;
-3. Demo：[午后南杂](https://recoluan.com) 
+3. Demo：[午后南杂](https://www.recoluan.com) 
 4. Docs：[vuepress-theme-reco-doc](https://vuepress-theme-reco.recoluan.com)、[github source](https://vuepress.github.io)、[zeit source](https://vuepress-reco-doc.now.sh)
 
 ## Quick start
@@ -64,8 +64,6 @@ theme-cli init
 <br />
 
 **P.S. Thanks to the two beauties for their contributions to the theme logo: Zoey and 冰冰.**
-
-[Join us](https://www.notion.so/vuepress-reco-f8a7a55d18e042929931b612f170dbf4)
 
 ## License
 [MIT](https://github.com/recoluan/vuepress-theme-reco/blob/master/LICENSE)

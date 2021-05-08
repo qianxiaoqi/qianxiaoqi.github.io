@@ -2,12 +2,13 @@
   <div
     class="abstract-item"
     @click="$router.push(item.path)">
-    <reco-icon v-if="item.frontmatter.sticky" icon="reco-sticky" />
+    <i v-if="item.frontmatter.sticky" class="iconfont reco-sticky"></i>
     <div class="title">
-      <reco-icon v-if="item.frontmatter.keys" icon="reco-lock" />
+      <i v-if="item.frontmatter.keys" class="iconfont reco-lock"></i>
       <router-link :to="item.path">{{item.title}}</router-link>
     </div>
     <div class="abstract" v-html="item.excerpt"></div>
+    <hr class="hr">
     <PageInfo
       :pageInfo="item"
       :currentTag="currentTag">
@@ -16,16 +17,15 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue-demi'
-import { RecoIcon } from '@vuepress-reco/core/lib/components'
 import PageInfo from './PageInfo'
-export default defineComponent({
-  components: { PageInfo, RecoIcon },
+export default {
+  components: { PageInfo },
   props: ['item', 'currentPage', 'currentTag']
-})
+}
 </script>
 
 <style lang="stylus" scoped>
+@require '../styles/mode.styl'
 .abstract-item
   position relative
   margin: 0 auto 20px;
@@ -53,10 +53,8 @@ export default defineComponent({
   .title
     position: relative;
     font-size: 1.28rem;
-    line-height: 46px;
+    line-height: 36px;
     display: inline-block;
-    a
-      color: var(--text-color);
     .reco-lock
       font-size 1.28rem
       color $accentColor

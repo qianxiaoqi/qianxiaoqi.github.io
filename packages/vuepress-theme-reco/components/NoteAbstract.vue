@@ -5,59 +5,24 @@
       :key="item.path"
       :item="item"
       :currentPage="currentPage"
-      :currentTag="currentTag"
-    />
-    <pagation
-      class="pagation"
-      :total="data.length"
-      :currentPage="currentPage"
-      @getCurrentPage="getCurrentPage"
-    />
+      :currentTag="currentTag" />
   </div>
 </template>
 
 <script>
-import { defineComponent, ref, toRefs, computed, getCurrentInstance, onMounted } from 'vue-demi'
-import pagination from '@theme/mixins/pagination'
 import NoteAbstractItem from './NoteAbstractItem'
 
-export default defineComponent({
-  mixins: [pagination],
+export default {
   components: { NoteAbstractItem },
-  props: ['data', 'currentTag'],
-
-  setup (props, ctx) {
-    const instance = getCurrentInstance().proxy
-
-    const { data } = toRefs(props)
-
-    const currentPage = ref(1)
-
-    const currentPageData = computed(() => {
-      const start = (currentPage.value - 1) * instance.$perPage
-      const end = currentPage.value * instance.$perPage
-
-      return data.value.slice(start, end)
-    })
-
-    const getCurrentPage = (page) => {
-      currentPage.value = page
-      instance._setStoragePage(page)
-      ctx.emit('paginationChange', page)
-    }
-
-    onMounted(() => {
-      currentPage.value = instance._getStoragePage() || 1
-    })
-
-    return { currentPage, currentPageData, getCurrentPage }
-  },
-  watch: {
-    $route () {
-      this.currentPage = this._getStoragePage() || 1
+  props: ['data', 'currentPage', 'currentTag'],
+  computed: {
+    currentPageData () {
+      const start = this.currentPage * 10 - 10
+      const end = this.currentPage * 10
+      return this.data.slice(start, end)
     }
   }
-})
+}
 </script>
 
 <style lang="stylus" scoped>

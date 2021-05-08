@@ -16,61 +16,91 @@
         v-show="recoShowModule"
         class="list"
         :data="posts"
-        :currentTag="$currentTags.key"
-        @paginationChange="paginationChange"></note-abstract>
+        :currentPage="currentPage"
+        @currentTag="$currentTags.key"></note-abstract>
+    </ModuleTransition>
+
+    <!-- 分页 -->
+    <ModuleTransition delay="0.16">
+      <pagation
+        class="pagation"
+        :total="posts.length"
+        :currentPage="currentPage"
+        @getCurrentPage="getCurrentPage"></pagation>
     </ModuleTransition>
   </Common>
 </template>
 
 <script>
-import { defineComponent, computed, getCurrentInstance } from 'vue-demi'
 import Common from '@theme/components/Common'
 import NoteAbstract from '@theme/components/NoteAbstract'
 import TagList from '@theme/components/TagList'
-import { ModuleTransition } from '@vuepress-reco/core/lib/components'
+import pagination from '@theme/mixins/pagination'
+import ModuleTransition from '@theme/components/ModuleTransition'
 import { sortPostsByStickyAndDate, filterPosts } from '@theme/helpers/postData'
 import moduleTransitonMixin from '@theme/mixins/moduleTransiton'
 
-export default defineComponent({
-  mixins: [moduleTransitonMixin],
+export default {
+  mixins: [pagination, moduleTransitonMixin],
   components: { Common, NoteAbstract, TagList, ModuleTransition },
 
-  setup (props, ctx) {
-    const instance = getCurrentInstance().proxy
+  data () {
+    return {
+      currentPage: 1,
+      currentTag: '全部'
+    }
+  },
 
+  computed: {
     // 时间降序后的博客列表
-    const posts = computed(() => {
-      let posts = instance.$currentTags.pages
+    posts () {
+      let posts = this.$currentTags.pages
       posts = filterPosts(posts)
       sortPostsByStickyAndDate(posts)
       return posts
-    })
-
-    const getCurrentTag = (tag) => {
-      ctx.emit('currentTag', tag)
     }
+  },
 
-    const tagClick = (tagInfo) => {
-      if (instance.$route.path !== tagInfo.path) {
-        instance.$router.push({ path: tagInfo.path })
+  mounted () {
+    this._setPage(this._getStoragePage())
+  },
+
+  methods: {
+    // 获取当前tag
+    getCurrentTag (tag) {
+      this.$emit('currentTag', tag)
+    },
+    tagClick (tagInfo) {
+      if (this.$route.path !== tagInfo.path) {
+        this.$router.push({ path: tagInfo.path })
       }
-    }
-
-    const paginationChange = (page) => {
+    },
+    // 获取当前页码
+    getCurrentPage (page) {
+      this._setPage(page)
       setTimeout(() => {
         window.scrollTo(0, 0)
       }, 100)
+    },
+    _setPage (page) {
+      this.currentPage = page
+      this.$page.currentPage = page
+      this._setStoragePage(page)
     }
+  },
 
-    return { posts, getCurrentTag, tagClick, paginationChange }
+  watch: {
+    $route () {
+      this._setPage(this._getStoragePage())
+    }
   }
-})
+}
 </script>
 
 <style src="../styles/theme.styl" lang="stylus"></style>
 
 <style lang="stylus" scoped>
-
+@require '../styles/mode.styl'
 .tag-wrapper
   max-width: $contentWidth;
   margin: 0 auto;

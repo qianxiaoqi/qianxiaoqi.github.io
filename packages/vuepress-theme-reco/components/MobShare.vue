@@ -17,15 +17,14 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue-demi'
-export default defineComponent({
-  setup (props, ctx) {
+export default {
+  mounted () {
     const script = document.createElement('script')
     script.src = 'http://f1.webshare.mob.com/code/mob-share.js?appkey=2d1a37832f835'
     script.id = '-mob-share'
 
     document.body.append(script)
   }
-})
+}
 </script>
 

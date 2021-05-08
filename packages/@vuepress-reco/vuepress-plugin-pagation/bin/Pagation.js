@@ -76,9 +76,7 @@ export default {
   },
   data () {
     return {
-      changePage: '', // 跳转页
-      /* eslint-disable no-undef */
-      pageSize: PERPAGE
+      changePage: '' // 跳转页
     }
   },
   props: {
@@ -88,7 +86,7 @@ export default {
     },
     perPage: {
       type: Number,
-      default: 10
+      default: 2
     },
     currentPage: {
       type: Number,
@@ -97,8 +95,7 @@ export default {
   },
   computed: {
     pages () {
-      const pageSize = this.pageSize || this.perPage
-      return Math.ceil(this.total / pageSize)
+      return Math.ceil(this.total / this.perPage)
     },
     show: function () {
       return this.pages && this.pages != 1

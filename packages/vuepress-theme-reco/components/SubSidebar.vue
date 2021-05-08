@@ -1,33 +1,24 @@
 <script>
-import { defineComponent, computed, getCurrentInstance } from 'vue-demi'
 import { isActive } from '@theme/helpers/utils'
 
-export default defineComponent({
-  setup (props, ctx) {
-    const instance = getCurrentInstance().proxy
-
-    const headers = computed(() => {
-      return instance.$showSubSideBar ? instance.$page.headers : []
-    })
-
-    const isLinkActive = (header) => {
-      const active = isActive(instance.$route, instance.$page.path + '#' + header.slug)
-      if (active) {
-        setTimeout(() => {
-          document.querySelector(`.reco-side-${header.slug}`).scrollIntoView()
-        }, 300)
-      }
-      return active
+export default {
+  computed: {
+    headers () {
+      const headers = (this.$page.headers || []).filter(header => header.level === 2)
+      return headers
     }
-
-    return { headers, isLinkActive }
+  },
+  methods: {
+    isLinkActive (header) {
+      return isActive(this.$route, this.$page.path + '#' + header.slug)
+    }
   },
   render (h) {
     return h('ul', {
       class: { 'sub-sidebar-wrapper': true },
-      style: { width: this.headers.length > 0 ? '12rem' : '0' }
+      style: { width: (this.$page.headers || []).length > 0 ? '12rem' : '0' }
     }, [
-      ...this.headers.map(header => {
+      ...(this.$page.headers || []).map(header => {
         return h('li', {
           class: {
             active: this.isLinkActive(header),
@@ -36,14 +27,15 @@ export default defineComponent({
           attr: { key: header.title }
         }, [
           h('router-link', {
-            class: { 'sidebar-link': true, [`reco-side-${header.slug}`]: true },
+            class: { 'sidebar-link': true },
             props: { to: `${this.$page.path}#${header.slug}` }
           }, header.title)
         ])
       })
     ])
   }
-})
+}
+
 </script>
 
 <style lang="stylus" scoped>

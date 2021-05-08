@@ -1,40 +1,54 @@
 <template>
   <div class="home-blog">
     <div class="hero" :style="{ ...bgImageStyle }">
-      <div>
-        <ModuleTransition>
-          <img
-            class="hero-img"
-            v-if="recoShowModule && $frontmatter.heroImage"
-            :style="heroImageStyle || {}"
-            :src="$withBase($frontmatter.heroImage)"
-            alt="hero"
-          />
-        </ModuleTransition>
+      <div
+        class="mask"
+        :style="{
+          background: `
+            url(${$frontmatter.bgImage ?
+            $withBase($frontmatter.bgImage) :
+            require('../images/home-bg.jpg')}) center/cover no-repeat
+          `
+        }"
+      ></div>
+      <ModuleTransition>
+        <img
+          v-if="recoShowModule && $frontmatter.heroImage"
+          :style="heroImageStyle || {}"
+          :src="$withBase($frontmatter.heroImage)"
+          alt="hero"
+        />
+      </ModuleTransition>
+      <ModuleTransition delay="0.04">
+        <h1 v-if="recoShowModule && $frontmatter.heroText !== null">
+          {{ $frontmatter.heroText || $title || 'vuePress-theme-reco' }}
+        </h1>
+      </ModuleTransition>
 
-        <ModuleTransition delay="0.04">
-          <h1 v-if="recoShowModule && $frontmatter.heroText !== null">
-            {{ $frontmatter.heroText || $title || 'vuePress-theme-reco' }}
-          </h1>
-        </ModuleTransition>
-
-        <ModuleTransition delay="0.08">
-          <p v-if="recoShowModule && $frontmatter.tagline !== null" class="description">
-            {{ $frontmatter.tagline || $description || 'Welcome to your vuePress-theme-reco site' }}
-          </p>
-        </ModuleTransition>
-      </div>
+      <ModuleTransition delay="0.08">
+        <p v-if="recoShowModule && $frontmatter.tagline !== null" class="description">
+          {{ $frontmatter.tagline || $description || 'Welcome to your vuePress-theme-reco site' }}
+        </p>
+      </ModuleTransition>
     </div>
 
     <ModuleTransition delay="0.16">
       <div v-show="recoShowModule" class="home-blog-wrapper">
         <div class="blog-list">
           <!-- 博客列表 -->
-          <note-abstract :data="$recoPosts" @paginationChange="paginationChange" />
+          <note-abstract
+            :data="$recoPosts"
+            :currentPage="currentPage"></note-abstract>
+          <!-- 分页 -->
+          <pagation
+            class="pagation"
+            :total="$recoPosts.length"
+            :currentPage="currentPage"
+            @getCurrentPage="getCurrentPage" />
         </div>
         <div class="info-wrapper">
           <PersonalInfo/>
-          <h4><reco-icon icon="reco-category" /> {{$recoLocales.category}}</h4>
+          <h4><i class="iconfont reco-category"></i> {{homeBlogCfg.category}}</h4>
           <ul class="category-wrapper">
             <li class="category-item" v-for="(item, index) in this.$categories.list" :key="index">
               <router-link :to="item.path">
@@ -44,9 +58,9 @@
             </li>
           </ul>
           <hr>
-          <h4 v-if="$tags.list.length !== 0"><reco-icon icon="reco-tag" /> {{$recoLocales.tag}}</h4>
+          <h4 v-if="$tags.list.length !== 0"><i class="iconfont reco-tag"></i> {{homeBlogCfg.tag}}</h4>
           <TagList @getCurrentTag="getPagesByTags" />
-          <h4 v-if="$themeConfig.friendLink && $themeConfig.friendLink.length !== 0"><reco-icon icon="reco-friend" /> {{$recoLocales.friendLink}}</h4>
+          <h4 v-if="$themeConfig.friendLink && $themeConfig.friendLink.length !== 0"><i class="iconfont reco-friend"></i> {{homeBlogCfg.friendLink}}</h4>
           <FriendLink />
         </div>
       </div>
@@ -59,86 +73,136 @@
 </template>
 
 <script>
-import { defineComponent, toRefs, reactive, computed, getCurrentInstance, onMounted } from 'vue-demi'
 import TagList from '@theme/components/TagList'
 import FriendLink from '@theme/components/FriendLink'
 import NoteAbstract from '@theme/components/NoteAbstract'
-import { ModuleTransition, RecoIcon } from '@vuepress-reco/core/lib/components'
+import pagination from '@theme/mixins/pagination'
+import ModuleTransition from '@theme/components/ModuleTransition'
 import PersonalInfo from '@theme/components/PersonalInfo'
 import { getOneColor } from '@theme/helpers/other'
+import moduleTransitonMixin from '@theme/mixins/moduleTransiton'
 
-export default defineComponent({
-  components: { NoteAbstract, TagList, FriendLink, ModuleTransition, PersonalInfo, RecoIcon },
-  setup (props, ctx) {
-    const instance = getCurrentInstance().proxy
-
-    const state = reactive({
+export default {
+  mixins: [pagination, moduleTransitonMixin],
+  components: { NoteAbstract, TagList, FriendLink, ModuleTransition, PersonalInfo },
+  data () {
+    return {
       recoShow: false,
-      heroHeight: 0
-    })
+      currentPage: 1,
+      tags: []
+    }
+  },
+  computed: {
+    homeBlogCfg () {
+      return this.$recoLocales.homeBlog
+    },
+    actionLink () {
+      const {
+        actionLink: link,
+        actionText: text
+      } = this.$frontmatter
 
-    const recoShowModule = computed(() => instance && instance.$parent.recoShowModule)
-
-    const heroImageStyle = computed(() => instance.$frontmatter.heroImageStyle || {})
-
-    const bgImageStyle = computed(() => {
-      const url = instance.$frontmatter.bgImage
-        ? instance.$withBase(instance.$frontmatter.bgImage)
-        : require('../../images/bg.svg')
-
-      const initBgImageStyle = {
-        textAlign: 'center',
-        overflow: 'hidden',
-        background: `url(${url}) center/cover no-repeat`
+      return {
+        link,
+        text
       }
-
-      const { bgImageStyle } = instance.$frontmatter
+    },
+    heroImageStyle () {
+      return this.$frontmatter.heroImageStyle || {
+        maxHeight: '200px',
+        margin: '6rem auto 1.5rem'
+      }
+    },
+    bgImageStyle () {
+      const initBgImageStyle = {
+        height: '350px',
+        textAlign: 'center',
+        overflow: 'hidden'
+      }
+      const {
+        bgImageStyle
+      } = this.$frontmatter
 
       return bgImageStyle ? { ...initBgImageStyle, ...bgImageStyle } : initBgImageStyle
-    })
-
-    onMounted(() => {
-      state.heroHeight = document.querySelector('.hero').clientHeight
-      state.recoShow = true
-    })
-
-    return { recoShowModule, heroImageStyle, bgImageStyle, ...toRefs(state), getOneColor }
+    },
+    heroHeight () {
+      return document.querySelector('.hero').clientHeight
+    }
+  },
+  mounted () {
+    this.recoShow = true
+    this._setPage(this._getStoragePage())
   },
   methods: {
-    paginationChange (page) {
+    // 获取当前页码
+    getCurrentPage (page) {
+      this._setPage(page)
       setTimeout(() => {
         window.scrollTo(0, this.heroHeight)
       }, 100)
     },
+    // 根据分类获取页面数据
+    getPages () {
+      let pages = this.$site.pages
+      pages = pages.filter(item => {
+        const { home, date } = item.frontmatter
+        return !(home == true || date === undefined)
+      })
+      // reverse()是为了按时间最近排序排序
+      this.pages = pages.length == 0 ? [] : pages
+    },
     getPagesByTags (tagInfo) {
       this.$router.push({ path: tagInfo.path })
-    }
+    },
+    _setPage (page) {
+      this.currentPage = page
+      this.$page.currentPage = page
+      this._setStoragePage(page)
+    },
+    getOneColor
   }
-})
+}
 </script>
 
 <style lang="stylus">
 .home-blog {
-  padding: 0;
+  padding: $navbarHeight 0 0;
   margin: 0px auto;
+
   .hero {
-    margin $navbarHeight auto 0
     position relative
-    box-sizing border-box
-    padding 0 20px
-    height 100vh
-    display flex
-    align-items center
-    justify-content center
-    .hero-img {
-      max-width: 300px;
-      margin: 0 auto 1.5rem
+    .mask {
+      position absolute
+      top 0
+      bottom 0
+      left 0
+      right 0
+      z-index -1
+      &:after {
+        display block
+        content ' '
+        background var(--mask-color)
+        position absolute
+        top 0
+        bottom 0
+        left 0
+        right 0
+        z-index 0
+        opacity .2
+      }
+    }
+    figure {
+      position absolute
+      background yellow
     }
 
     h1 {
-      display: block;
-      margin:0 auto 1.8rem;
+      margin:7rem auto 1.8rem;
       font-size: 2.5rem;
+    }
+
+    h1, .description, .action, .huawei {
+      color #fff
     }
 
     .description {
@@ -151,7 +215,6 @@ export default defineComponent({
     display flex
     align-items: flex-start;
     margin 20px auto 0
-    padding 0 20px
     max-width $homePageWidth
     .blog-list {
       flex auto
@@ -168,6 +231,7 @@ export default defineComponent({
       top 70px
       overflow hidden
       transition all .3s
+      margin-top 15px
       margin-left 15px
       flex 0 0 300px
       height auto
@@ -194,15 +258,10 @@ export default defineComponent({
           background-color var(--background-color)
           &:hover {
             transform scale(1.04)
-            a {
-              color $accentColor
-            }
           }
           a {
             display flex
             justify-content: space-between
-            align-items: center
-            color var(--text-color)
             .post-num {
               width 1.6rem;
               height 1.6rem
@@ -222,7 +281,10 @@ export default defineComponent({
 
 @media (max-width: $MQMobile) {
   .home-blog {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
     .hero {
+      margin 0 -1.5rem
       height 450px
       img {
         max-height: 210px;
@@ -230,8 +292,12 @@ export default defineComponent({
       }
 
       h1 {
-        margin: 0 auto 1.8rem ;
+        margin: 6rem auto 1.8rem ;
         font-size: 2rem;
+      }
+
+      h1, .description, .action {
+        // margin: 1.2rem auto;
       }
 
       .description {
@@ -261,15 +327,19 @@ export default defineComponent({
 
 @media (max-width: $MQMobileNarrow) {
   .home-blog {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+
     .hero {
-      height 450px
+      margin 0 -1.5rem
+      height 350px
       img {
         max-height: 210px;
         margin: 2rem auto 1.2rem;
       }
 
       h1 {
-        margin: 0 auto 1.8rem ;
+        margin: 6rem auto 1.8rem ;
         font-size: 2rem;
       }
 

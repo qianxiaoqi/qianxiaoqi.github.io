@@ -47,9 +47,7 @@ import pagationLocales from './locales'
 export default {
   data () {
     return {
-      changePage: '', // 跳转页
-      /* eslint-disable no-undef */
-      pageSize: PERPAGE
+      changePage: '' // 跳转页
     }
   },
   props: {
@@ -68,8 +66,7 @@ export default {
   },
   computed: {
     pages () {
-      const pageSize = this.pageSize || this.perPage
-      return Math.ceil(this.total / pageSize)
+      return Math.ceil(this.total / this.perPage)
     },
     show: function () {
       return this.pages && this.pages != 1

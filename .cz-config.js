@@ -51,7 +51,6 @@ module.exports = {
 
   scopes: [
     'vuepress-theme-reco',
-    'core',
     'vuepress-plugin-back-to-top',
     'vuepress-plugin-comments',
     'vuepress-plugin-loading',

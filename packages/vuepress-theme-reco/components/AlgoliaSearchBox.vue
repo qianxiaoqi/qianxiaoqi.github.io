@@ -4,7 +4,7 @@
     class="algolia-search-wrapper search-box"
     role="search"
   >
-    <reco-icon icon="reco-search" />
+    <i class="iconfont reco-search"></i>
     <input
       id="algolia-search-input"
       class="search-query"
@@ -14,20 +14,20 @@
 </template>
 
 <script>
-import { defineComponent, ref, onMounted, getCurrentInstance } from 'vue-demi'
-import { RecoIcon } from '@vuepress-reco/core/lib/components'
-
-export default defineComponent({
-  components: { RecoIcon },
-
+export default {
   props: ['options'],
+  data () {
+    return {
+      placeholder: undefined
+    }
+  },
+  mounted () {
+    this.initialize(this.options, this.$lang)
+    this.placeholder = this.$site.themeConfig.searchPlaceholder || ''
+  },
 
-  setup (props, ctx) {
-    const instance = getCurrentInstance().proxy
-
-    const placeholder = ref(undefined)
-
-    const initialize = (userOptions, lang) => {
+  methods: {
+    initialize (userOptions, lang) {
       Promise.all([
         import(/* webpackChunkName: "docsearch" */ 'docsearch.js/dist/cdn/docsearch.min.js'),
         import(/* webpackChunkName: "docsearch" */ 'docsearch.js/dist/cdn/docsearch.min.css')
@@ -50,19 +50,12 @@ export default defineComponent({
           }
         ))
       })
+    },
+
+    update (options, lang) {
+      this.$el.innerHTML = '<input id="algolia-search-input" class="search-query">'
+      this.initialize(options, lang)
     }
-
-    const update = (options, lang) => {
-      instance.$el.innerHTML = '<input id="algolia-search-input" class="search-query">'
-      instance.initialize(options, lang)
-    }
-
-    onMounted(() => {
-      initialize(props.options, instance.$lang)
-      placeholder.value = instance.$site.themeConfig.searchPlaceholder || ''
-    })
-
-    return { placeholder, initialize, update }
   },
 
   watch: {
@@ -74,10 +67,11 @@ export default defineComponent({
       this.update(newValue, this.$lang)
     }
   }
-})
+}
 </script>
 
 <style lang="stylus">
+@require '../styles/mode.styl'
 .algolia-search-wrapper
   & > span
     vertical-align middle

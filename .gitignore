@@ -1,10 +1,4 @@
 node_modules
 yarn-error.log
 .idea
-yarn.lock
 .DS_Store
-.vscode
-package-lock.json
-lib
-libs
-dist
