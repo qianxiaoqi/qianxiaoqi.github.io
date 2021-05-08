@@ -12,7 +12,7 @@ module.exports = {
     nav: [
       { text: 'Home', icon: 'reco-home', link: '/' },
       // { text: 'TimeLine', icon: 'reco-date', link: '/timeline/' },
-      { text: 'Github', icon: 'reco-github', link: 'https://github.com/recoluan' }
+      { text: 'Github', icon: 'reco-github', link: 'https://github.com/qianxiaoqi' }
     ],
     type: 'blog',
     // 博客设置
