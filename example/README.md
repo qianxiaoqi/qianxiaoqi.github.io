@@ -1,17 +1,7 @@
 ---
 home: true
-heroText: vuepress-theme-reco
-tagline: A simple and beautiful vuepress blog theme.
-# heroImage: /hero.png
-# heroImageStyle: {
-#   maxWidth: '600px',
-#   width: '100%',
-#   display: block,
-#   margin: '9rem auto 2rem',
-#   background: '#fff',
-#   borderRadius: '1rem',
-# }
-# isShowTitleInHome: false
+heroText: 小七 の blog
+tagline: 想法 + 实践 = Bug.
 actionText: Guide
 actionLink: /views/other/guide
 features:
