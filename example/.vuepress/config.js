@@ -1,48 +1,60 @@
 module.exports = {
   title: "小七のblog",
-  description: '想法 + 实践 = Bug',
-  dest: 'example/public',
+  description: "想法 + 实践 = Bug",
+  dest: "example/public",
   head: [
-    ['link', { rel: 'icon', href: '/favicon.ico' }],
-    ['meta', { name: 'viewport', content: 'width=device-width,initial-scale=1,user-scalable=no' }]
+    ["link", { rel: "icon", href: "/favicon.ico" }],
+    [
+      "meta",
+      {
+        name: "viewport",
+        content: "width=device-width,initial-scale=1,user-scalable=no"
+      }
+    ]
   ],
-  base: '/',
-  theme: require.resolve('../../packages/vuepress-theme-reco'),
+  base: "/",
+  theme: require.resolve("../../packages/vuepress-theme-reco"),
   themeConfig: {
     nav: [
-      { text: 'Home', icon: 'reco-home', link: '/' },
+      { text: "Home", icon: "reco-home", link: "/" },
       // { text: 'TimeLine', icon: 'reco-date', link: '/timeline/' },
-      { text: 'Github', icon: 'reco-github', link: 'https://github.com/qianxiaoqi' }
+      {
+        text: "Github",
+        icon: "reco-github",
+        link: "https://github.com/qianxiaoqi"
+      }
     ],
-    type: 'blog',
+    type: "blog",
     // 博客设置
     blogConfig: {
       category: {
         location: 2, // 在导航栏菜单中所占的位置，默认2
-        text: 'Category' // 默认 “分类”
+        text: "Category" // 默认 “分类”
       },
       tag: {
         location: 3, // 在导航栏菜单中所占的位置，默认3
-        text: 'Tag' // 默认 “标签”
+        text: "Tag" // 默认 “标签”
       }
     },
-    logo: '/head.png',
-    authorAvatar: '/head.png',
+    logo: "/head.png",
+    authorAvatar: "/head.png",
     // 搜索设置
     search: true,
     searchMaxSuggestions: 10,
     // 自动形成侧边导航
-    sidebar: 'auto',
+    sidebar: "auto",
     sidebarDepth: 10,
     // 最后更新时间
-    lastUpdated: 'Last Updated',
+    lastUpdated: "Last Updated",
     // 作者
-    author: '小七',
+    author: "小七",
     // 备案号
-    record: '苏ICP备19064892号',
+    record: "苏ICP备19064892号",
+    // 备案链接到官网
+    recordLink: "https://beian.miit.gov.cn",
     // 项目开始时间
-    startYear: '2019',
-  
+    startYear: "2019"
+
     // friendLink: [
     //   {
     //     title: '午后南杂',
@@ -69,4 +81,4 @@ module.exports = {
      * 'twilight'
      */
   }
-}
+};
