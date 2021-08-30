@@ -17,7 +17,7 @@ date=`date +%Y-%m-%d_%H:%M:%S`
 git commit -m "deploy ${date}"
 
 # 发布到 gitee
-git push -f git@gitee.com:css-7/css-7.git master:gh-pages
+git push -f git@gitee.com:bug7/bug7.git master:gh-pages
 
 # 删除打包后的文件夹
 cd ../../
